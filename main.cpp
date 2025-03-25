@@ -1,42 +1,5 @@
 
 
-/*
- * initialize decks
- * card drawn each turn, at same time
- * or can peek and either use that and a side one or push it and play the next
- * one or ask how many cards they have left in deck / side pile
- * -
- * does computer have the ability to peek and stuff?
- * i mean, i think so, may as well
- * each decision is 50% chance, assuming conditions are met
- */
-
-/* deck class
- * queue with linked list
- * provide card from front and add all won cards to bottom
- * be able to tell how many cards left
- * -
- * then there will be a node class
- * we can probably just represent cards as ints from 2 to 14 (ace)
- * and we have to initialize in main, since its a linked list
- * unless you want it to have a function, but i want to do it, cameron doesn't
- * have to what kinda linked list? single? double? circular? circular sounds
- * like a pain, and its just a queue i feel single should be fine
- */
-
-/* side pile
- * stack with an array
- * max of 5 possible cards
- * cannot peek
- * can add a card to top or remove card from top
- * can tell player how many cards left
- */
-
-/*
- * test case
- * don't worry about it now
- */
-
 #include "Deck.h"
 #include "SidePile.h"
 #include <cstdlib> //for random
@@ -68,6 +31,7 @@ int main() {
   int com_card{0};
   int player_side_card{0};
   int com_side_card{0};
+  bool skip{ false };
 
   // start game
   std::cout << "Game Start!\n";
@@ -136,6 +100,7 @@ int main() {
         player_sidepile.Push(peek_card);   // add to side pile
         std::cout << "Your card was added to the side pile!\n";
         player_card = player_deck.Dequeue(); // play next card in deck
+        std::cout << "You drew the next card!\n";
         std::cout << "Player card: " << player_card << " ";
       } else {
 
@@ -174,6 +139,7 @@ int main() {
             player_sidepile.Push(player_card);
             std::cout << "Your card was added to the side pile!\n";
             player_card = player_deck.Dequeue(); // take next card to use
+            std::cout << "You drew the next card!\n";
             std::cout << "Player card: " << player_card << " ";
             break;
           }
@@ -193,6 +159,7 @@ int main() {
       // see cards in decks/side pile
       std::cout << "Cards in deck: " << player_deck.DeckSize() << '\n';
       std::cout << "Cards in side pile: " << player_sidepile.PileSize() << '\n';
+      skip = true;
       break;
     }
     case (4): {
@@ -209,7 +176,7 @@ int main() {
     }
 
     // computer peek or play, random choice, assuming no forfeit
-    if (!forfeit) {
+    if (!forfeit && !skip) {
       int com_choice = std::rand() % 2;
       switch (com_choice) {
       case (0): {
@@ -250,7 +217,7 @@ int main() {
             int top_of_deck = com_deck.Dequeue();
             int top_of_sidepile = com_sidepile.Pop();
             std::cout << "COM card: " << top_of_deck << " (deck) + "
-                      << top_of_sidepile << "(side pile)\n";
+                      << top_of_sidepile << " (side pile)\n";
             com_card = top_of_deck = top_of_sidepile;
             com_side_card = top_of_sidepile;
             break;
@@ -317,9 +284,9 @@ int main() {
       }
 
     } // forfeit check end bracket
-
+    skip = false;
     std::cout << "\n";
-  }
+  } //while loop end
 
   // determine who wins or loses / forfeit
   if (forfeit) {
@@ -373,7 +340,7 @@ void InitializeDeck(Deck &d) {
       temp[i] = cards[i + 1];
     }
 
-    // copy temp to cardsptr
+    // copy temp to cardss
     for (int i{0}; i < size - 1; i++) {
       cards[i] = temp[i];
     }
