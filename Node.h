@@ -1,6 +1,7 @@
 #pragma once
 
 class Node {
-	int cardNo;
-	Node* next;
+public:
+  int cardNo{0};
+  Node *next{nullptr};
 };
